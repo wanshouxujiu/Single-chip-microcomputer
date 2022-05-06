@@ -1,0 +1,34 @@
+#include <REGX52.H>
+#include "Delay.h"
+#include "MatrixLED.h"
+
+//取模 》新建图像》C51格式 》纵向》非倒序           （适用本模块）
+//添加关键字 code 将数据放到 flash 中，但是这样就不可更改
+unsigned char code Animation[] = {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0xFF,0x08,0x08,0x08,0xFF,0x00,0x0E,0x15,0x15,0x15,0x08,0x00,0xFF,0x01,0x02,0x00,
+0xFF,0x01,0x02,0x00,0x0E,0x11,0x11,0x0E,0x00,0x7D,0x00,0x00,0x00,0x00,0x00,0x00};
+
+void main()
+{
+	unsigned char num = 0;     //变量必须定义在函数开头
+	unsigned char Count = 0;
+	
+	MatrixLED_Init();
+	while(1)
+	{
+		unsigned char i = 0;
+		for(i = 0; i < 8; i++)
+		{
+			MatrixLED_ShowCilumn(i, Animation[i+num]);
+		}
+		Count++;
+		if(Count>10)       //点亮10次向前滚动一列，可用定时替换
+		{
+			Count = 0;
+			num++;           //若是动画则 +8 （刷新整个屏幕）
+			if(num > 32)     //原本就播放了前8列，40-8
+			{
+				num = 0;
+			}
+		}
+	}
+}
